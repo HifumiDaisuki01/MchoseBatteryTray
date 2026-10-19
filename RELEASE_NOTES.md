@@ -1,14 +1,14 @@
-## v0.1.2 — 更清晰的纯数字托盘 / Clear borderless tray digits
+## v0.1.3 — 自然比例数字 / Natural tray digits
 
-- 移除圆形背景和底部横线，只显示透明背景的大号粗体数字。
-- 按字形实际边界填满托盘空间，包含 0、两位电量和 100；未知状态仍显示 `--`。
-- 浅色任务栏使用更深的状态色，提升对比度；保留充电蓝色和低电量红色。
-- 无新增依赖、轮询或后台定时器；低电量提醒与设置保持可用。
+修复 v0.1.2 为填满托盘区域而分别缩放宽高，造成数字细长变形的问题。
 
-Transparent, borderless, larger bold digits replace the circular background and underline. Glyph bounds fill the tray area, including three-digit 100. Darker status colors improve contrast on light taskbars. No new dependencies or polling.
+- 保持 Segoe UI Bold 原始字形比例，统一缩放宽高、居中显示，并保留上下空白。
+- 正常电量随任务栏主题显示黑色或白色；低电量红色、充电蓝色。
+- 100 通过等比缩小完整显示；保持透明背景，无边框、圆形底板和横线。
+- 不增加运行依赖或后台任务；低电量提示与设备查询逻辑保持可用。
 
-用户已确认 A7 V2 Pro 的 2.4G 读取和托盘状态显示正常。新图标在不同 DPI、Windows 主题下的最终效果仍请实机核对；USB、充电及提醒显示未据此宣称通过验证。
+Fixes the stretched digits introduced in v0.1.2. Text now uses uniform scaling, preserves Segoe UI Bold proportions, and is centered with vertical padding. Normal readings use black or white for the taskbar theme; low battery remains red and charging blue. Three-digit 100 scales down without distortion. No new runtime dependencies or background jobs.
 
-A user confirmed A7 V2 Pro readings and tray status over 2.4 GHz. Please check the new icon on your Windows theme/DPI. USB, charging and notification delivery remain unverified.
+Windows 编译、22 项协议及 26 项提醒逻辑检查，以及实际 Windows 字形预览均由关联 Actions 生成。请在自己的任务栏缩放设置下核对最终视觉效果。
 
-Windows 构建及 22 项协议 + 26 项提醒逻辑检查由关联 Actions 验证。下载 ZIP 或单独 EXE，退出旧版后替换即可。旧版 Release 保留。
+下载 ZIP 或 EXE，退出旧版后替换即可；旧版本保留。

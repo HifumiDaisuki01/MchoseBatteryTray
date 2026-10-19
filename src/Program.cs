@@ -43,7 +43,7 @@ sealed class TrayContext : ApplicationContext {
  bool Startup() { using(var k=Registry.CurrentUser.OpenSubKey(RunKey)) return k!=null&&k.GetValue(RunName)!=null; }
  ContextMenuStrip Menu() {
   var menu=new ContextMenuStrip();
-  menu.Items.Add("MCHOSE 电量托盘 0.1.2").Enabled=false;
+  menu.Items.Add("MCHOSE 电量托盘 0.1.3").Enabled=false;
   menu.Items.Add("查看状态",null,delegate { ShowDetails(); });
   menu.Items.Add("立即刷新",null,delegate { Poll(); });
   var rates=new ToolStripMenuItem("刷新间隔");
@@ -69,12 +69,13 @@ sealed class TrayContext : ApplicationContext {
  void ReplaceMenu(NotifyIcon n) { var old=n.ContextMenuStrip; n.ContextMenuStrip=Menu(); if(old!=null) old.Dispose(); }
  void ShowDetails() { MessageBox.Show(details+"\n\n默认每 10 秒查询；灰色 -- 表示当前无法读取。\n首次测试建议退出 M HUB，并关闭网页驱动。\n双击图标查看状态，右键调整设置。"+(demo?"\n【演示模式：电量为模拟数据】":""),"MCHOSE 电量托盘"); }
  void SetIcon(NotifyIcon n,string text,Color color,string tooltip) {
-  // Darker status colors remain readable on a light taskbar.
+  // Normal readings follow the system icon color; warnings keep their status colors.
   bool light=SystemColors.Control.GetBrightness()>0.5f;
   try { using(var key=Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize")) {
    object value=key==null?null:key.GetValue("SystemUsesLightTheme"); if(value is int) light=(int)value!=0;
   } } catch { }
-  if(light) { if(color==Color.LightGreen) color=Color.FromArgb(0,100,32); else if(color==Color.DeepSkyBlue) color=Color.FromArgb(0,85,190); else if(color==Color.OrangeRed) color=Color.FromArgb(190,35,20); }
+  if(color==Color.LightGreen) color=light?Color.Black:Color.White;
+  if(light) { if(color==Color.DeepSkyBlue) color=Color.FromArgb(0,85,190); else if(color==Color.OrangeRed) color=Color.FromArgb(190,35,20); }
   using(var bmp=TrayIconRenderer.Render(text,color)) {
    IntPtr h=bmp.GetHicon(); try { using(var temp=Icon.FromHandle(h)) { Icon next=(Icon)temp.Clone(); var previous=n.Icon; n.Icon=next; if(previous!=null) previous.Dispose(); } } finally { DestroyIcon(h); }
   }

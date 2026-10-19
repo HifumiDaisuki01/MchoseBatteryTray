@@ -14,7 +14,7 @@ class Preview {
   using(var sheet=new Bitmap(960,220)) using(var g=Graphics.FromImage(sheet)) using(var label=new Font("Segoe UI",12)) {
    string[] samples={"0","7","20","97","100","--"};
    for(int row=0;row<2;row++) {
-    Color bg=row==0?Color.White:Color.FromArgb(32,32,32), fg=row==0?Color.FromArgb(0,100,32):Color.LightGreen;
+    Color bg=row==0?Color.White:Color.FromArgb(32,32,32), fg=row==0?Color.Black:Color.White;
     using(var fill=new SolidBrush(bg)) g.FillRectangle(fill,0,row*110,960,110);
     for(int col=0;col<samples.Length;col++) using(var icon=TrayIconRenderer.Render(samples[col],fg)) {
      int x=col*160,y=row*110;

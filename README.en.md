@@ -10,8 +10,8 @@ A small, offline C# / WinForms utility using native Windows HID feature reports.
 
 ## Features
 
-- Large, borderless digits on a transparent tray icon: no circular background or underline, with darker status colors on light taskbars.
-- Green for normal battery operation, red at 20% or below, blue while charging, grey `--` when unavailable.
+- Borderless digits on a transparent tray icon: natural font proportions, centered with vertical padding, without stretching or decoration.
+- Black or white to match the taskbar for normal battery operation, red at 20% or below, blue while charging, grey `--` when unavailable.
 - Automatic polling and device rescanning every 5 / 10 / 30 / 60 seconds; 10 seconds by default.
 - Hover for status, double-click for details, right-click for settings and diagnostics.
 - Optional low-battery notifications, disabled by default, with 10% / 20% / 30% thresholds.

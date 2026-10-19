@@ -4,5 +4,5 @@ using System.Reflection;
 [assembly: AssemblyCompany("Keran Technology")]
 [assembly: AssemblyProduct("MCHOSE Battery Tray")]
 [assembly: AssemblyCopyright("Copyright (c) 2026 Keran Technology")]
-[assembly: AssemblyVersion("0.1.2.0")]
-[assembly: AssemblyFileVersion("0.1.2.0")]
+[assembly: AssemblyVersion("0.1.3.0")]
+[assembly: AssemblyFileVersion("0.1.3.0")]
