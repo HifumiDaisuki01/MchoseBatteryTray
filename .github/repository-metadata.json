@@ -1,0 +1,27 @@
+{
+  "owner": "HifumiDaisuki01",
+  "name": "MchoseBatteryTray",
+  "visibility": "public",
+  "description": "Lightweight Windows tray battery monitor for MCHOSE mice, starting with A7 V2 Pro. Native USB HID, offline, no M HUB required. 迈从鼠标电量托盘工具。",
+  "topics": [
+    "mchose",
+    "mchose-a7",
+    "a7-v2-pro",
+    "windows",
+    "system-tray",
+    "battery-monitor",
+    "battery-status",
+    "usb-hid",
+    "hid",
+    "mouse",
+    "winforms",
+    "csharp",
+    "dotnet",
+    "peripherals"
+  ],
+  "release": {
+    "tag": "v0.1.0",
+    "prerelease": true,
+    "title": "MCHOSE Battery Tray v0.1.0 · Experimental"
+  }
+}

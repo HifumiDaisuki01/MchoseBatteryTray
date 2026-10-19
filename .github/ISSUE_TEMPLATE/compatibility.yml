@@ -1,0 +1,39 @@
+name: Hardware compatibility / 设备兼容性
+description: Report a working device or a battery/status problem.
+title: "[Device] "
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Exact model / 完整型号
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows, firmware, tool version / 系统、固件、工具版本
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection / 连接方式
+      options:
+        - 2.4 GHz receiver
+        - USB cable
+        - Cable and receiver together
+        - Bluetooth (currently unsupported)
+    validations:
+      required: true
+  - type: textarea
+    id: readings
+    attributes:
+      label: Result / 测试结果
+      description: Tool vs M HUB reading, charging/sleep state, reproduction steps. / 工具和官方读数、充电或休眠状态、重现步骤。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Reviewed diagnostic log / 检查后的诊断日志
+      description: Review device details before sharing publicly. No passwords or tokens. / 公开前检查设备信息，请勿提供密码或令牌。

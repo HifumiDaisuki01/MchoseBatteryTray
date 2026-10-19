@@ -1,0 +1,6 @@
+*.exe
+*.pdb
+*.log
+*.zip
+artifacts/
+SHA256SUMS.txt
