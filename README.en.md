@@ -14,6 +14,7 @@ A small, offline C# / WinForms utility using native Windows HID feature reports.
 - Green for normal battery operation, red at 20% or below, blue while charging, grey `--` when unavailable.
 - Automatic polling and device rescanning every 5 / 10 / 30 / 60 seconds; 10 seconds by default.
 - Hover for status, double-click for details, right-click for settings and diagnostics.
+- Optional low-battery notifications, disabled by default, with 10% / 20% / 30% thresholds.
 - Optional per-user startup without administrator privileges.
 - One executable; no Python, Node.js, browser, M HUB, NuGet packages or network access required by the app.
 - Status queries only: no DPI, button, polling-rate or firmware changes.
@@ -26,6 +27,12 @@ A small, offline C# / WinForms utility using native Windows HID feature reports.
 4. Drag the icon out of the hidden-icons area if necessary. Enable startup from its context menu after moving the EXE to a permanent location.
 
 Windows 10 / 11 with .NET Framework 4.5+ is required. The executable is unsigned. The current interface is in Chinese.
+
+## Low-battery notifications
+
+Right-click the tray icon and open `低电量提醒`. Choose 10%, 20% or 30%; `关闭（默认）` disables alerts. The choice persists across restarts.
+
+Notifications use the built-in Windows tray balloon API and the existing polling results: no new dependencies, timers or extra device queries. Only valid, connected readings on battery power can trigger an alert. Each device alerts once per low-battery episode within the current session. Failed reads, disconnections and small fluctuations do not rearm it; charging, charge completion or a recovery at least five percentage points above the threshold does. Changing the threshold or restarting starts a fresh decision. Demo mode never sends alerts. Windows notification settings or Do Not Disturb may suppress delivery.
 
 ## Compatibility
 
@@ -53,7 +60,7 @@ On Windows, double-click `build.cmd`, or run:
 ./scripts/build.ps1 -Test
 ```
 
-The build uses the system .NET Framework C# compiler. CI builds and tests on Windows, and tag pushes package a prerelease with SHA-256 checksums. The 22 synthetic protocol checks cover request framing, low percentages without incorrect scaling, identity and link parsing, charging, invalid replies and model mapping. These are not USB hardware tests.
+The build uses the system .NET Framework C# compiler. CI builds and tests on Windows, and tag pushes package a prerelease with SHA-256 checksums. The 22 synthetic protocol checks and 26 alert-logic checks cover request framing, low percentages without incorrect scaling, identity and link parsing, charging, invalid replies and model mapping. These are not USB hardware tests.
 
 `MchoseTray.exe --demo` shows a clearly labelled simulated device without querying HID. Normal launches never use simulated data.
 

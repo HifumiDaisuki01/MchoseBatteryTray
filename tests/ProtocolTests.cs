@@ -15,6 +15,6 @@ class Tests {
   Reject(null); Reject(new byte[4]); Reject(new byte[21]); Reject(Frame(101,9,0));
   var bad=Frame(50,9,0);bad[1]=0;Reject(bad);bad=Frame(50,9,0);bad[2]=255;bad[3]=255;Reject(bad);
   Check(Protocol.Model(16408,"receiver")=="A7 V2 Pro","model id");
-  Console.WriteLine("PASS: "+count+" protocol checks (synthetic fixtures, not hardware tests)");
+  Console.WriteLine("PASS: "+count+" protocol checks + "+AlertTests.Run()+" alert checks (synthetic fixtures, not hardware tests)");
  }
 }

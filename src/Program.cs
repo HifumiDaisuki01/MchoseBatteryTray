@@ -27,11 +27,13 @@ sealed class TrayContext : ApplicationContext {
  readonly string dir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"KeranMchoseTray");
  readonly bool demo; bool busy,closing; DateTime started; int seconds=10; string details="正在查找设备…"; NotifyIcon main;
  readonly object logLock=new object();
+ readonly LowBatteryAlerts alerts=new LowBatteryAlerts();
  const string RunKey="Software\\Microsoft\\Windows\\CurrentVersion\\Run", RunName="KeranMchoseTray";
  [DllImport("user32.dll")] static extern bool DestroyIcon(IntPtr icon);
  public TrayContext(bool demoMode) {
   demo=demoMode; Directory.CreateDirectory(dir); dispatch.CreateControl(); IntPtr dispatchHandle=dispatch.Handle;
   int saved; string config=Path.Combine(dir,"interval.txt"); if(File.Exists(config)&&Int32.TryParse(File.ReadAllText(config),out saved)&&(saved==5||saved==10||saved==30||saved==60)) seconds=saved;
+  int savedAlert; string alertConfig=Path.Combine(dir,"low-battery.txt"); if(File.Exists(alertConfig)&&Int32.TryParse(File.ReadAllText(alertConfig),out savedAlert)&&(savedAlert==0||savedAlert==10||savedAlert==20||savedAlert==30)) alerts.Configure(savedAlert);
   main=NewIcon(); SetIcon(main,"--",Color.Gray,"MCHOSE：正在查找设备"); main.Visible=true;
   timer.Interval=seconds*1000; timer.Tick+=delegate { Poll(); }; timer.Start(); Poll();
  }
@@ -42,12 +44,21 @@ sealed class TrayContext : ApplicationContext {
  bool Startup() { using(var k=Registry.CurrentUser.OpenSubKey(RunKey)) return k!=null&&k.GetValue(RunName)!=null; }
  ContextMenuStrip Menu() {
   var menu=new ContextMenuStrip();
-  menu.Items.Add("MCHOSE 电量托盘 0.1.0").Enabled=false;
+  menu.Items.Add("MCHOSE 电量托盘 0.1.1").Enabled=false;
   menu.Items.Add("查看状态",null,delegate { ShowDetails(); });
   menu.Items.Add("立即刷新",null,delegate { Poll(); });
   var rates=new ToolStripMenuItem("刷新间隔");
   foreach(int value in new int[]{5,10,30,60}) { int selected=value; var item=new ToolStripMenuItem(value+" 秒"); item.Checked=seconds==value; item.Click+=delegate { seconds=selected; timer.Interval=seconds*1000; File.WriteAllText(Path.Combine(dir,"interval.txt"),seconds.ToString()); RebuildMenus(); }; rates.DropDownItems.Add(item); }
   menu.Items.Add(rates);
+  var alertMenu=new ToolStripMenuItem("低电量提醒");
+  foreach(int value in new int[]{0,10,20,30}) {
+   int selected=value; var item=new ToolStripMenuItem(value==0?"关闭（默认）":value+"% 及以下"); item.Checked=alerts.Threshold==value;
+   item.Click+=delegate {
+    try { File.WriteAllText(Path.Combine(dir,"low-battery.txt"),selected.ToString()); alerts.Configure(selected); RebuildMenus(); Poll(); }
+    catch(Exception ex) { MessageBox.Show(ex.Message,"无法保存低电量提醒设置"); }
+   }; alertMenu.DropDownItems.Add(item);
+  }
+  menu.Items.Add(alertMenu);
   var startup=new ToolStripMenuItem("开机启动"); startup.Checked=Startup(); startup.Click+=delegate {
    try { using(var k=Registry.CurrentUser.CreateSubKey(RunKey)) { if(Startup()) k.DeleteValue(RunName,false); else k.SetValue(RunName,"\""+Application.ExecutablePath+"\""); } RebuildMenus(); }
    catch(Exception ex) { MessageBox.Show(ex.Message,"无法设置开机启动"); }
@@ -98,6 +109,10 @@ sealed class TrayContext : ApplicationContext {
     status+=String.Format("\n设备身份 {0:X4}:{1:X4}；连接标志 {2}；充电码 {3}",r.Vid,r.Pid,r.Linked,r.Charge);
    } else status+=s.Error;
    SetIcon(n,number,color,s.Name+" "+(r==null?s.Error:r.State+" "+(r.Linked?r.Battery+"%":""))); n.Visible=true; lines.Add(status);
+   if(!demo && alerts.ShouldNotify(s.Key,r)) {
+    try { n.ShowBalloonTip(5000,"鼠标低电量",s.Name+" 当前电量 "+r.Battery+"%，请及时充电。",ToolTipIcon.Warning); }
+    catch(Exception ex) { Log("低电量通知失败: "+ex.Message); }
+   }
   }
   var remove=new List<string>(); foreach(var key in icons.Keys) if(!seen.Contains(key)) remove.Add(key);
   foreach(var key in remove) { DisposeIcon(icons[key]); icons.Remove(key); }
