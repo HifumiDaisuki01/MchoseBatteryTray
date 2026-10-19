@@ -4,9 +4,7 @@
 
 [简体中文](README.md) · [Download](https://github.com/HifumiDaisuki01/MchoseBatteryTray/releases) · [Report compatibility](https://github.com/HifumiDaisuki01/MchoseBatteryTray/issues/new/choose)
 
-A small, offline C# / WinForms utility using native Windows HID feature reports. The initial target is the **MCHOSE A7 V2 Pro**.
-
-> Experimental prerelease. The official web driver's protocol has been inspected, and synthetic parser tests pass. **A user confirmed working A7 V2 Pro battery readings and tray status over 2.4 GHz on 2026-10-19. USB, other models, charging and on-screen low-battery alerts need further hardware validation.** Compatibility reports are welcome.
+A small, offline C# / WinForms utility using native Windows HID feature reports. Supports the A7, L7, M7 and K7 Ultra families, with a separate newer-protocol reader for K7 V2, K5, A7 V3 and other listed models.
 
 ## Features
 
@@ -36,15 +34,12 @@ Notifications use the built-in Windows tray balloon API and the existing polling
 
 ## Compatibility
 
-| Device / connection | Status |
-| --- | --- |
-| A7 V2 Pro, 2.4 GHz / USB | User-confirmed readings/tray status over 2.4 GHz; USB unverified |
-| A7 V2 Pro+ / Ultra / Ultra+ | Model mappings included; hardware unverified |
-| Other classic-protocol MCHOSE mice | Potentially compatible; unverified |
-| Bluetooth | Not supported |
-| Keyboards, headsets, other protocols | Not supported |
+| Protocol | Model families | Validation |
+| --- | --- | --- |
+| Classic feature reports | A7 / Pro / Ultra / Ultra(RE), A7 V2 series, A7X Ultra, L7 and M7 variants, K7 Ultra, A5 V2 Ultra, AX5 V2 | A7 V2 Pro readings/tray status over 2.4 GHz confirmed by a user; other models adapted from official tables |
+| New 0x4D output/input reports | K7 V2 Pro / Pro+ / Ultra / Ultra+, K5 Pro / Ultra / V2, A7 V3 variants, A5 V3 Pro / Ultra+, R7 Ultra, V7 / Pro, G3 V3 | Separate reader and synthetic compatibility checks implemented from official protocol; awaiting model-specific hardware reports |
 
-This is not an all-model driver. A cable and receiver may produce two icons. Receiver-side cached values and sleep behavior depend on firmware. Coexistence with official software has not been validated.
+USB and 2.4 GHz only. Bluetooth, keyboards, headsets, older G3 protocols and unlisted ordinary-K7 firmware are not claimed. Protocol implementation and physical-device confirmation are tracked separately. A cable and receiver may produce two icons; receiver-side caching depends on firmware.
 
 ## Troubleshooting and feedback
 
@@ -60,7 +55,7 @@ On Windows, double-click `build.cmd`, or run:
 ./scripts/build.ps1 -Test
 ```
 
-The build uses the system .NET Framework C# compiler. CI builds and tests on Windows, and tag pushes package a prerelease with SHA-256 checksums. The 22 synthetic protocol checks and 26 alert-logic checks cover request framing, low percentages without incorrect scaling, identity and link parsing, charging, invalid replies and model mapping. These are not USB hardware tests.
+The build uses the system .NET Framework C# compiler. CI builds and tests on Windows, and tag pushes package a stable release with SHA-256 checksums. Protocol, alert and model compatibility checks cover request framing, low percentages without incorrect scaling, identity and link parsing, charging, invalid replies and model mapping. These are not USB hardware tests.
 
 `MchoseTray.exe --demo` shows a clearly labelled simulated device without querying HID. Normal launches never use simulated data.
 
@@ -70,4 +65,8 @@ See [PROTOCOL.md](PROTOCOL.md) for the official bundle inspected, field offsets,
 
 Issues and pull requests are welcome, especially hardware reports, connection deduplication and evidence-backed support for additional protocols. If the tool helps, **please consider starring the repository** so other MCHOSE users can find it.
 
-Maintained by Keran Technology. [MIT License](LICENSE). Unofficial; not affiliated with MCHOSE.
+Keran Technology © 2026 · [tech.keran.cc](http://tech.keran.cc)
+
+Feedback: [Keran@keran.cc](mailto:Keran@keran.cc) · QQ: 3522952742
+
+[Powered by Keran](https://www.keran.cc) · [MIT License](LICENSE) · Not affiliated with MCHOSE.

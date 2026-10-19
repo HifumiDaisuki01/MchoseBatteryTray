@@ -1,14 +1,21 @@
-## v0.1.3 — 自然比例数字 / Natural tray digits
+## MCHOSE Battery Tray v1.0.0
 
-修复 v0.1.2 为填满托盘区域而分别缩放宽高，造成数字细长变形的问题。
+首个正式版。保留自然比例的黑白数字托盘、低电量提醒及开机启动，移除实验版标识与状态窗口中的首次测试提示。
 
-- 保持 Segoe UI Bold 原始字形比例，统一缩放宽高、居中显示，并保留上下空白。
-- 正常电量随任务栏主题显示黑色或白色；低电量红色、充电蓝色。
-- 100 通过等比缩小完整显示；保持透明背景，无边框、圆形底板和横线。
-- 不增加运行依赖或后台任务；低电量提示与设备查询逻辑保持可用。
+### 更新
 
-Fixes the stretched digits introduced in v0.1.2. Text now uses uniform scaling, preserves Segoe UI Bold proportions, and is centered with vertical padding. Normal readings use black or white for the taskbar theme; low battery remains red and charging blue. Three-digit 100 scales down without distortion. No new runtime dependencies or background jobs.
+- 扩充 A7 普通版 / Pro / Ultra、L7、M7、K7 Ultra 等经典协议型号识别。
+- 新增 0x4D 原生异步 HID 读取通道，适配 K7 V2、K5、A7 V3 及型号表中其他新协议鼠标；包含超时、报文身份、长度和校验检查。
+- 重做状态窗口：底部显示 Keran Technology © 2026、http://tech.keran.cc、问题反馈邮箱 Keran@keran.cc 和 QQ: 3522952742；官网与邮箱可点击。
+- 右键菜单标明版权，最底部“Powered by Keran”打开 www.keran.cc。
+- 无新增运行依赖；继续使用系统 .NET Framework、WinForms 和 Windows HID API。
 
-Windows 编译、22 项协议及 26 项提醒逻辑检查，以及实际 Windows 字形预览均由关联 Actions 生成。请在自己的任务栏缩放设置下核对最终视觉效果。
+### 兼容性记录
 
-下载 ZIP 或 EXE，退出旧版后替换即可；旧版本保留。
+A7 V2 Pro 的 2.4G 读取和托盘显示已有用户实机确认。其他新增型号按官方网页驱动的型号表和协议适配，尚无对应型号实机报告；详见 README。蓝牙、键盘、耳机及未列出的固件协议不在支持范围。
+
+### 下载
+
+下载 Windows ZIP 或单独 EXE，退出旧版后替换运行。设置自动保留。附 SHA-256 校验，旧版本 Release 保留。
+
+First stable release with expanded classic mouse identification, a separate timeout-bounded 0x4D reader for newer families, and a branded status window with website and feedback links. No new runtime dependencies. A7 V2 Pro 2.4 GHz readings/tray status are user-confirmed; other listed models are protocol-adapted rather than physically certified. See README for exact support.

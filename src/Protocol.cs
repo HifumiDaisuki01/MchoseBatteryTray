@@ -15,9 +15,24 @@ public static class Protocol {
   if(d[9]>100) throw new FormatException("电量超出 0–100，拒绝显示");
   return new Reading { Vid=vid, Pid=pid, Mode=d[8]&7, Linked=(d[8]&8)!=0, Battery=d[9], Charge=d[10] };
  }
+ public static byte[] ModernRequest(int length) {
+  if(length<64 || length>512) throw new ArgumentOutOfRangeException("length");
+  byte[] b=new byte[length]; b[0]=0x4D; b[1]=1; b[2]=1; b[5]=9; b[8]=8; return b;
+ }
+ public static Reading ParseModern(byte[] raw,int usbPid) {
+  if(raw==null || raw.Length<22 || raw[0]!=0x4D || raw[1]!=1 || raw[4]!=0 || raw[5]!=9 || raw[6]!=0 || raw[7]!=0) throw new FormatException("不是有效的 0x4D/0x0900 状态应答");
+  int length=raw[3]; if(length<14 || length>raw.Length-8) throw new FormatException("状态应答长度无效");
+  if((raw[2]&1)!=0) {
+   if(raw.Length<=8+length) throw new FormatException("状态应答缺少校验位");
+   byte sum=0; for(int i=2;i<8+length;i++) sum^=raw[i];
+   if(sum!=raw[8+length]) throw new FormatException("状态应答校验失败");
+  }
+  int vid=raw[8]|raw[9]<<8, pid=raw[10]|raw[11]<<8;
+  if((vid!=0x3837 && vid!=0x5253)||!MouseCatalog.Modern.ContainsKey(pid)||raw[20]>100) throw new FormatException("状态应答身份或电量无效");
+  return new Reading {Vid=vid,Pid=pid,Battery=raw[20],Charge=raw[19],Mode=MouseCatalog.Modern.ContainsKey(usbPid)?0:1,Linked=raw[18]!=0||raw[20]>0||raw[19]==1||raw[19]==2};
+ }
  public static string Model(int pid, string fallback) {
-  switch(pid) { case 16408:return "A7 V2 Pro"; case 16419:return "A7 V2 Pro+"; case 16409:return "A7 V2 Ultra"; case 16417:return "A7 V2 Ultra+"; }
-  return String.IsNullOrWhiteSpace(fallback)?"MCHOSE " + pid.ToString("X4"):fallback;
+  return MouseCatalog.Name(pid,fallback);
  }
 }
 }

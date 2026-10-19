@@ -2,20 +2,18 @@
 
 **在 Windows 右下角直接查看迈从鼠标电量，无需常驻 M HUB 或网页驱动。**
 
-[English](README.en.md) · [下载试用版](https://github.com/HifumiDaisuki01/MchoseBatteryTray/releases) · [使用说明](USAGE.zh-CN.md) · [反馈兼容性](https://github.com/HifumiDaisuki01/MchoseBatteryTray/issues/new/choose)
+[English](README.en.md) · [下载正式版](https://github.com/HifumiDaisuki01/MchoseBatteryTray/releases) · [使用说明](USAGE.zh-CN.md) · [反馈兼容性](https://github.com/HifumiDaisuki01/MchoseBatteryTray/issues/new/choose)
 
-![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D4) ![License: MIT](https://img.shields.io/badge/License-MIT-green) ![Status](https://img.shields.io/badge/status-experimental-orange)
+![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D4) ![License: MIT](https://img.shields.io/badge/License-MIT-green) ![Status](https://img.shields.io/badge/status-stable-brightgreen)
 
-一个使用 C# / WinForms 编写的轻量托盘工具，通过 Windows 原生 HID 接口读取电池状态。优先面向 **MCHOSE A7 V2 Pro（迈从 A7 二代 Pro）**；源码、协议笔记和构建脚本均公开。
-
-> **当前版本为实验性预发布。** 用户已确认 A7 V2 Pro 的 2.4G 电量读取和托盘状态显示正常（2026-10-19）；USB、其他型号、充电及低电量通知显示仍需进一步实机验证。欢迎提交兼容性报告。
+一个使用 C# / WinForms 编写的轻量托盘工具，通过 Windows 原生 HID 接口读取电池状态。支持 **A7、L7、M7、K7 Ultra 以及 K7 V2 / K5 等新协议系列**；源码、协议笔记和构建脚本均公开。
 
 ## 功能
 
 - **大号纯数字图标**：透明背景，无圆形底板、边框或横线；按字体原始比例等比缩放并居中，避免细长变形；正常电量随任务栏主题显示黑色或白色。
 - **状态颜色**：黑色／白色为正常供电，红色为低电量，蓝色为充电，灰色 `--` 为无法读取。
 - **自动刷新与设备重扫**：默认 10 秒，可选 5 / 10 / 30 / 60 秒。
-- **悬停看状态、双击看详情**，右键立即刷新、打开诊断文件夹。
+- **悬停看状态、双击看详情**：状态窗口带版权、官网及反馈联系方式；右键菜单底部可访问 Keran 官网。
 - **可选低电量通知**：默认关闭，右键选择 10% / 20% / 30%；使用 Windows 原生托盘通知，不增加依赖。
 - **可选开机启动**，无需管理员权限。
 - **单 EXE、离线运行**：不依赖 Python、Node.js、浏览器或 M HUB；使用 Windows 自带 .NET Framework。
@@ -42,15 +40,18 @@
 
 ## 兼容性
 
-| 型号 / 连接 | 当前状态 |
-| --- | --- |
-| A7 V2 Pro · 2.4G / USB | 用户已确认 2.4G 读取与托盘显示正常；USB 待验证 |
-| A7 V2 Pro+ / Ultra / Ultra+ | 已有型号映射，实机待验证 |
-| 其他经典协议迈从鼠标 | 可能兼容，尚未验证 |
-| 蓝牙 | 暂不支持 |
-| 键盘、耳机及其他协议设备 | 暂不支持 |
+| 系列 | 型号 / 读取方式 | 验证记录 |
+| --- | --- | --- |
+| A7 | A7、Pro、Ultra、Ultra(RE)、A7X Ultra；经典 HID 协议 | A7 V2 Pro 的 2.4G 读取和托盘显示已有用户实机确认 |
+| A7 V2 | Pro、Pro+、Ultra、Ultra+；经典 HID 协议 | 其余型号按官网协议适配 |
+| L7 / M7 | 普通版、Pro、Ultra，以及 L7 Pro+ / Ultra+；经典 HID 协议 | 官网型号表和协议适配 |
+| K7 Ultra | 经典 HID 协议 | 官网型号表和协议适配 |
+| K7 V2 | Pro、Pro+、Ultra、Ultra+；0x4D 新协议 | 新读取通道和解析检查已实现，等待型号实机反馈 |
+| K5 | Pro、Ultra、V2；0x4D 新协议 | 官网型号表和新协议适配 |
+| 更多新协议鼠标 | A7 V3 系列、A5 V3 Pro / Ultra+、R7 Ultra、V7 / Pro、G3 V3 | 官网型号表和新协议适配 |
+| A5 V2 Ultra / AX5 V2 | 经典 HID 协议 | 官网型号表和协议适配 |
 
-这不是全系列通用驱动。同一鼠标同时通过 USB 和接收器连接时可能显示两个图标；接收器也可能返回缓存电量。官方驱动共存、固件差异和睡眠状态仍需验证。
+支持上述协议的 USB / 2.4G 模式。蓝牙、键盘、耳机、旧 G3 协议及未列出的 K7 普通版固件不在本版支持表内。协议适配与实机验证分别记录，不代表所有固件都已测试。同一鼠标的 USB 和接收器可能各显示一个图标，接收器缓存行为取决于固件。
 
 ## 电量不显示或不准确？
 
@@ -72,7 +73,7 @@ Windows 双击 `build.cmd`，或在 PowerShell 中执行：
 
 构建及测试均只使用系统 .NET Framework 编译器，无 NuGet 依赖。CI 在 Windows runner 上构建并运行协议测试；标签推送会生成 Release 附件及 SHA-256 校验。
 
-目前已通过 **22 项合成协议检查和 26 项提醒逻辑检查**，包括低电量数值、身份字段、连接位、充电状态和异常回包拒绝。合成测试不代表硬件验证。`MchoseTray.exe --demo` 使用明确标识的模拟数据。
+目前已通过 **原有协议、提醒逻辑以及新增型号和报文兼容性检查**，包括低电量数值、身份字段、连接位、充电状态和异常回包拒绝。合成测试不代表硬件验证。`MchoseTray.exe --demo` 使用明确标识的模拟数据。
 
 ## 工作原理
 
@@ -84,4 +85,8 @@ Windows 双击 `build.cmd`，或在 PowerShell 中执行：
 
 **如果这个工具帮你省去了反复打开驱动的麻烦，欢迎点一个 ⭐ Star，让更多迈从用户找到它。**
 
-由 Keran Technology 维护，使用 [MIT License](LICENSE)。非迈从官方项目，与 MCHOSE 无隶属关系。
+Keran Technology © 2026 · [tech.keran.cc](http://tech.keran.cc)
+
+问题反馈：[Keran@keran.cc](mailto:Keran@keran.cc) · QQ：3522952742
+
+[Powered by Keran](https://www.keran.cc) · [MIT License](LICENSE) · 非迈从官方项目。

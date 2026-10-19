@@ -43,7 +43,7 @@ sealed class TrayContext : ApplicationContext {
  bool Startup() { using(var k=Registry.CurrentUser.OpenSubKey(RunKey)) return k!=null&&k.GetValue(RunName)!=null; }
  ContextMenuStrip Menu() {
   var menu=new ContextMenuStrip();
-  menu.Items.Add("MCHOSE 电量托盘 0.1.3").Enabled=false;
+  menu.Items.Add("MCHOSE 电量托盘 1.0.0").Enabled=false;
   menu.Items.Add("查看状态",null,delegate { ShowDetails(); });
   menu.Items.Add("立即刷新",null,delegate { Poll(); });
   var rates=new ToolStripMenuItem("刷新间隔");
@@ -63,11 +63,15 @@ sealed class TrayContext : ApplicationContext {
    catch(Exception ex) { MessageBox.Show(ex.Message,"无法设置开机启动"); }
   }; menu.Items.Add(startup);
   menu.Items.Add("打开诊断文件夹",null,delegate { Process.Start("explorer.exe",dir); });
-  menu.Items.Add(new ToolStripSeparator()); menu.Items.Add("退出",null,delegate { ExitThread(); }); return menu;
+  menu.Items.Add(new ToolStripSeparator()); menu.Items.Add("退出",null,delegate { ExitThread(); });
+  menu.Items.Add(new ToolStripSeparator());
+  menu.Items.Add("© 2026 Keran Technology").Enabled=false;
+  menu.Items.Add("Powered by Keran",null,delegate { StatusWindow.OpenLink("https://www.keran.cc"); });
+  return menu;
  }
  void RebuildMenus() { ReplaceMenu(main); foreach(var n in icons.Values) ReplaceMenu(n); }
  void ReplaceMenu(NotifyIcon n) { var old=n.ContextMenuStrip; n.ContextMenuStrip=Menu(); if(old!=null) old.Dispose(); }
- void ShowDetails() { MessageBox.Show(details+"\n\n默认每 10 秒查询；灰色 -- 表示当前无法读取。\n首次测试建议退出 M HUB，并关闭网页驱动。\n双击图标查看状态，右键调整设置。"+(demo?"\n【演示模式：电量为模拟数据】":""),"MCHOSE 电量托盘"); }
+ void ShowDetails() { StatusWindow.Show(details,demo); }
  void SetIcon(NotifyIcon n,string text,Color color,string tooltip) {
   // Normal readings follow the system icon color; warnings keep their status colors.
   bool light=SystemColors.Control.GetBrightness()>0.5f;
@@ -108,7 +112,7 @@ sealed class TrayContext : ApplicationContext {
    seen.Add(s.Key); NotifyIcon n; if(!icons.TryGetValue(s.Key,out n)) { n=NewIcon(); icons.Add(s.Key,n); }
    Reading r=s.Reading; string status=s.Name+": "; Color color=Color.Gray; string number="--";
    if(r!=null) { status+=r.State+" | "+r.Connection+" | "+r.Battery+"%"; if(r.Linked) { number=r.Battery.ToString(); color=r.Charge==1?Color.DeepSkyBlue:r.Battery<=20?Color.OrangeRed:Color.LightGreen; }
-    status+=String.Format("\n设备身份 {0:X4}:{1:X4}；连接标志 {2}；充电码 {3}",r.Vid,r.Pid,r.Linked,r.Charge);
+
    } else status+=s.Error;
    SetIcon(n,number,color,s.Name+" "+(r==null?s.Error:r.State+" "+(r.Linked?r.Battery+"%":""))); n.Visible=true; lines.Add(status);
    if(!demo && alerts.ShouldNotify(s.Key,r)) {
@@ -119,7 +123,7 @@ sealed class TrayContext : ApplicationContext {
   var remove=new List<string>(); foreach(var key in icons.Keys) if(!seen.Contains(key)) remove.Add(key);
   foreach(var key in remove) { DisposeIcon(icons[key]); icons.Remove(key); }
   main.Visible=snapshots.Count==0;
-  if(main.Visible) { SetIcon(main,"--",Color.Gray,"MCHOSE：未找到受支持的设备"); lines.Add("未找到受支持的经典协议鼠标。\n请接入 2.4G 接收器或 USB 数据线；蓝牙暂未支持。\n键盘、耳机及其他协议型号暂未支持。"); }
+  if(main.Visible) { SetIcon(main,"--",Color.Gray,"MCHOSE：未找到受支持的设备"); lines.Add("未检测到可读取的鼠标。"); }
   details=(demo?"【模拟数据】\n":"")+String.Join("\n\n",lines.ToArray())+"\n\n本轮查询完成："+DateTime.Now.ToString("HH:mm:ss");
  }
  void DisposeIcon(NotifyIcon n) { n.Visible=false; if(n.Icon!=null) n.Icon.Dispose(); if(n.ContextMenuStrip!=null) n.ContextMenuStrip.Dispose(); n.Dispose(); }

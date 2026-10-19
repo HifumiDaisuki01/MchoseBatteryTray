@@ -10,7 +10,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Application build failed.' }
 if ($Test) {
     $testExe = Join-Path ([IO.Path]::GetTempPath()) ('MchoseTray-tests-' + [Guid]::NewGuid().ToString('N') + '.exe')
     try {
-        & $csc /nologo /codepage:65001 /target:exe "/out:$testExe" (Join-Path $root 'src\Protocol.cs') (Join-Path $root 'tests\ProtocolTests.cs') (Join-Path $root 'src\LowBatteryAlerts.cs') (Join-Path $root 'tests\AlertTests.cs')
+        & $csc /nologo /codepage:65001 /target:exe "/out:$testExe" (Join-Path $root 'src\Protocol.cs') (Join-Path $root 'tests\ProtocolTests.cs') (Join-Path $root 'src\LowBatteryAlerts.cs') (Join-Path $root 'tests\AlertTests.cs') (Join-Path $root 'src\MouseCatalog.cs') (Join-Path $root 'tests\CompatibilityTests.cs')
         if ($LASTEXITCODE -ne 0) { throw 'Test compilation failed.' }
         & $testExe
         if ($LASTEXITCODE -ne 0) { throw 'Protocol tests failed.' }

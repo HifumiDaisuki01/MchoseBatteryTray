@@ -22,6 +22,13 @@ jobs:
         with:
           name: tray-icon-preview
           path: ${{ runner.temp }}/mchose-icon-preview.png
+      - name: Render status window preview
+        shell: pwsh
+        run: ./scripts/preview-status.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: status-window-preview
+          path: ${{ runner.temp }}/mchose-status-preview.png
       - name: Package
         shell: pwsh
         run: |
@@ -48,8 +55,8 @@ jobs:
         with:
           name: MchoseBatteryTray-Windows
           path: artifacts
-      - name: Publish experimental prerelease
+      - name: Publish stable release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" artifacts/* --verify-tag --prerelease --title "MCHOSE Battery Tray $RELEASE_TAG · Experimental" --notes-file RELEASE_NOTES.md
+        run: gh release create "$RELEASE_TAG" artifacts/* --verify-tag --latest --title "MCHOSE Battery Tray $RELEASE_TAG" --notes-file RELEASE_NOTES.md

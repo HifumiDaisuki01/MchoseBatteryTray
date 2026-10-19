@@ -44,3 +44,23 @@ Windows 完整应答（含 report ID）的偏移：
 ## 尚需实机确认
 
 Windows HID 查询权限、各固件应答长度、A7 V2 Pro 连接及充电状态的实际取值、充电码 2 的含义、休眠时缓存行为、官方驱动共存及多设备去重。当前充电码 0/1/2 分别解释为电池供电/充电中/充电完成，其他值保留为未知并在详情显示原值。合成单元测试仅检验代码按此定义工作，不能代替实机验证。
+
+
+## v1.0.0: extended families and new output/input protocol
+
+Official source rechecked 2026-10-19: same `purify.es-CjCZz1i7.js` bundle.
+
+`MouseCatalog.cs` contains the official model-table identity IDs, separate from shared receiver IDs. Classic A7 / Pro / Ultra, L7 / M7 variants and K7 Ultra use the existing inverted `0x11 / 0x06` status read. A7 V2 Pro 2.4 GHz readings and tray display have been confirmed by the user.
+
+For newer K7 V2, K5, A7 V3 and other explicitly listed models, official functions `a1e`, `mu`, `u1e` and `zK` establish:
+
+- Full request is 64 bytes: report `0x4D`, version 1, flags 1, payload length 0, command `0x0900` little-endian, bizCode 0, sequence 0, XOR checksum at index 8 (`0x08`).
+- WebHID input data excludes the report ID. Its command is data[3..4], and payload starts data[7]; Windows includes report ID, so these become full-frame indices [4..5] and [8].
+- Identity payload: VID u16 at 0, PID u16 at 2, capability bytes at 4..9, connection code at 10, charging at 11, percentage at 12, game mode at 13.
+- Thus the full Windows frame has connection code at 18, charging at 19 and battery at 20. All values here are direct, not XOR-inverted.
+- Frames that declare checksum flag bit 0 must have the correct XOR over full-frame indices 2 through 7+payloadLength. Command, version, sequence, bizCode, size, model identity and range are checked before displaying a value.
+- New protocol selection is limited to the official vendor 0x3837, known direct model IDs / receiver IDs, vendor usage pages 0xFF01 or 0xFF0B and adequate input/output report sizes. Classic traffic is never used as a fallback on these new devices.
+- Windows overlapped I/O uses the Framework FileStream async implementation with buffering disabled (buffer size 1), explicit write/read waits and a 1.5 second transaction budget. Unrelated input events are skipped; the official busy marker 0xFF is retried within the same budget. Disposing the stream closes the handle and cancels outstanding native operations.
+- The USB-versus-receiver label is inferred from the physical PID, not from an assumed bit layout of the connection code. Empty identity frames are rejected. A valid reading with zero connection code and zero battery/charge is shown as unlinked rather than triggering a false empty-battery alert.
+
+New-family support is based on official protocol/code, not claimed physical validation. The ambiguous base A5 V3 identity 16418 appears across protocol generations and is deliberately not selected as a new-protocol direct device. Older G3 / G3 V2 and unlisted ordinary K7 firmware are not claimed; they require separate protocol evidence. Bluetooth is outside this USB reader.
