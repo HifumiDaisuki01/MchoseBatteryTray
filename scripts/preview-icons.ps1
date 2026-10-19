@@ -33,7 +33,8 @@ class Preview {
     $csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
     & $csc /nologo /reference:System.Drawing.dll "/out:$exe" (Join-Path $root 'src\TrayIconRenderer.cs') $file
     if ($LASTEXITCODE -ne 0) { throw 'Icon preview compilation failed.' }
-    $output = Join-Path ([IO.Path]::GetTempPath()) 'mchose-icon-preview.png'
+    $outputDirectory = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [IO.Path]::GetTempPath() }
+    $output = Join-Path $outputDirectory 'mchose-icon-preview.png'
     & $exe $output
     if ($LASTEXITCODE -ne 0) { throw 'Icon rendering failed.' }
     Write-Host "Rendered $output"
