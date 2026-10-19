@@ -15,6 +15,13 @@ jobs:
       - name: Build and test
         shell: pwsh
         run: ./scripts/build.ps1 -Test
+      - name: Render tray icon preview
+        shell: pwsh
+        run: ./scripts/preview-icons.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tray-icon-preview
+          path: ${{ runner.temp }}/mchose-icon-preview.png
       - name: Package
         shell: pwsh
         run: |

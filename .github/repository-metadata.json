@@ -20,8 +20,8 @@
     "peripherals"
   ],
   "release": {
-    "tag": "v0.1.1",
+    "tag": "v0.1.2",
     "prerelease": true,
-    "title": "MCHOSE Battery Tray v0.1.1 · Optional low-battery alerts"
+    "title": "MCHOSE Battery Tray v0.1.2 · Clear borderless digits"
   }
 }

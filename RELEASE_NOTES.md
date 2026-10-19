@@ -1,22 +1,14 @@
-## v0.1.1 — 可选低电量提醒 / Optional low-battery alerts
+## v0.1.2 — 更清晰的纯数字托盘 / Clear borderless tray digits
 
-新增轻量低电量提示，使用 Windows 自带托盘通知，无新增依赖、后台定时器或额外 HID 查询。
+- 移除圆形背景和底部横线，只显示透明背景的大号粗体数字。
+- 按字形实际边界填满托盘空间，包含 0、两位电量和 100；未知状态仍显示 `--`。
+- 浅色任务栏使用更深的状态色，提升对比度；保留充电蓝色和低电量红色。
+- 无新增依赖、轮询或后台定时器；低电量提醒与设置保持可用。
 
-- 默认关闭；右键“低电量提醒”可选 10%、20%、30%，设置自动保存。
-- 每个设备每轮低电量提醒一次；充电或回升到阈值以上至少 5 个百分点后才重新允许提醒。
-- 无效读数、断连、未知充电状态与模拟模式不提醒。重启或修改阈值会重新判断。
-- Windows 的通知设置 / 勿扰模式可能阻止通知显示。
+Transparent, borderless, larger bold digits replace the circular background and underline. Glyph bounds fill the tray area, including three-digit 100. Darker status colors improve contrast on light taskbars. No new dependencies or polling.
 
-Built-in Windows tray notifications, off by default, with saved 10% / 20% / 30% thresholds. Reuses existing polling: no additional libraries, timers or device queries. Repeated polls, temporary disconnections and small fluctuations do not repeat an alert. Charging or recovery by at least five percentage points above the threshold rearms it. Restarting or changing the threshold starts a fresh decision. Windows may suppress notifications.
+用户已确认 A7 V2 Pro 的 2.4G 读取和托盘状态显示正常。新图标在不同 DPI、Windows 主题下的最终效果仍请实机核对；USB、充电及提醒显示未据此宣称通过验证。
 
-### 验证 / Validation
+A user confirmed A7 V2 Pro readings and tray status over 2.4 GHz. Please check the new icon on your Windows theme/DPI. USB, charging and notification delivery remain unverified.
 
-22 项合成协议检查 + 26 项提醒逻辑检查；Windows 编译及测试结果见关联 Actions。真实 A7 V2 Pro 和 Windows 通知显示仍待用户实机验证。
-
-22 synthetic protocol checks plus 26 alert checks. See the associated Actions run for Windows build/test results. Physical mouse behavior and on-screen notification delivery remain unverified.
-
-### 下载 / Downloads
-
-推荐下载 `MchoseBatteryTray-Windows.zip` 并解压运行；也提供单独 EXE 与 SHA-256 校验。Windows 10 / 11，.NET Framework 4.5+，无需安装其他组件。
-
-Bluetooth, keyboards and headsets remain unsupported. This is an experimental prerelease. Previous releases are retained.
+Windows 构建及 22 项协议 + 26 项提醒逻辑检查由关联 Actions 验证。下载 ZIP 或单独 EXE，退出旧版后替换即可。旧版 Release 保留。

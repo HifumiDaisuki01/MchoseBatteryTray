@@ -6,11 +6,11 @@
 
 A small, offline C# / WinForms utility using native Windows HID feature reports. The initial target is the **MCHOSE A7 V2 Pro**.
 
-> Experimental prerelease. The official web driver's protocol has been inspected, and synthetic parser tests pass. **The A7 V2 Pro and Windows HID behavior have not yet been tested on physical hardware.** Compatibility reports are welcome.
+> Experimental prerelease. The official web driver's protocol has been inspected, and synthetic parser tests pass. **A user confirmed working A7 V2 Pro battery readings and tray status over 2.4 GHz on 2026-10-19. USB, other models, charging and on-screen low-battery alerts need further hardware validation.** Compatibility reports are welcome.
 
 ## Features
 
-- Battery percentage rendered directly inside a notification-area icon.
+- Large, borderless digits on a transparent tray icon: no circular background or underline, with darker status colors on light taskbars.
 - Green for normal battery operation, red at 20% or below, blue while charging, grey `--` when unavailable.
 - Automatic polling and device rescanning every 5 / 10 / 30 / 60 seconds; 10 seconds by default.
 - Hover for status, double-click for details, right-click for settings and diagnostics.
@@ -38,7 +38,7 @@ Notifications use the built-in Windows tray balloon API and the existing polling
 
 | Device / connection | Status |
 | --- | --- |
-| A7 V2 Pro, 2.4 GHz / USB | Primary target; official protocol inspected, hardware unverified |
+| A7 V2 Pro, 2.4 GHz / USB | User-confirmed readings/tray status over 2.4 GHz; USB unverified |
 | A7 V2 Pro+ / Ultra / Ultra+ | Model mappings included; hardware unverified |
 | Other classic-protocol MCHOSE mice | Potentially compatible; unverified |
 | Bluetooth | Not supported |
